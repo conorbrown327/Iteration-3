@@ -75,6 +75,8 @@ class DeliveryAgent : public EntityBase {
   IStrategy* GetStrategy() { return strategy_; }
   void DetermineStrategy(std::string strategy);
 
+  void ChangeColor(std::vector<IEntityObserver*> observers);
+
 protected:
   std::vector<Vector3D> route_;
   std::vector<std::vector<float>> original_route;

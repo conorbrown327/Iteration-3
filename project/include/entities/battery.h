@@ -27,16 +27,18 @@ class Battery {
   Battery() {}
   ///Constructor: sets the max charge to the passed in value
   Battery(float max_charge);
-  
+
   /// Returns true if the battery is dead, false otherwise
   bool IsDead() { return dead_battery_; }
-  
+
   /// Returns the remaining charge
   float ChargeLeft() { return remaining_battery_; }
-  
+
   /// Decreases the charge in the battery
 
   void DepleteBattery(float dt);
+
+  float MaxCharge() {return max_charge_;}
 
  private:
   bool dead_battery_ = false;
