@@ -31,8 +31,44 @@ namespace csci3081 {
     this->SetDirection({0, 1, 0});
   }
 
+  void DeliveryAgent::ChangeColor(std::vector<IEntityObserver*> observers){
+     std::string old_value = "temp";
+     // check if color has been set within the json file
+    if(JsonHelper::ContainsKey(details_, "color")) {
+      old_value = JsonHelper::GetString(details_, "color");
+    }
+    std::string new_value;
+    float charge_level = battery_->ChargeLeft() / battery_->MaxCharge();
+    // set the color to a hex value based on charge level
+    if (charge_level >= .75){
+      new_value = "0x00FF00";
+    }
+    else if (charge_level >= .5 ){
+      new_value = "0xFFFF00";
+    }
+    else if (charge_level >= .25){
+      new_value = "0xFF9900";
+    }
+    else{
+      new_value = "0xFF0000";
+    }
+    // if the color changed set the new hex value
+    if (old_value.compare(new_value) != 0){
+      details_["color"] = picojson::value(new_value);
+      picojson::object notification = JsonHelper::CreateJsonNotification();
+      JsonHelper::AddStringToJsonObject(notification, "value", "updateDetails");
+      picojson::value details_value = JsonHelper::ConvertPicojsonObjectToValue(details_);
+      JsonHelper::AddValueToJsonObject(notification, "details", details_value);
+      picojson::value delivery_agent_value = JsonHelper::ConvertPicojsonObjectToValue(notification);
+      for (IEntityObserver* observer : observers){
+        observer->OnEvent(delivery_agent_value, *this);
+      }
+    }
+  }
+
 
   void DeliveryAgent::Update(float dt, std::vector<IEntityObserver*> observers) {
+    this->ChangeColor(observers);
     if(scheduled_package == nullptr){ //if there is no scheduled_package, do not move DeliveryAgent
       return;
     }

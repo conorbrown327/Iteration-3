@@ -71,9 +71,15 @@ class DeliveryAgent : public EntityBase {
   ///Notifies observers
   void Notify(std::vector<IEntityObserver*> observers, std::string value);
 
+  ///Set the strategy for the entity
   void SetStrategy(IStrategy* strategy) { strategy_ = strategy; }
+  ///Get the strategy for the entity
   IStrategy* GetStrategy() { return strategy_; }
+  ///Determine the strategy from the json value
   void DetermineStrategy(std::string strategy);
+
+  ///Change the color of the entity based on the charge level
+  void ChangeColor(std::vector<IEntityObserver*> observers);
 
 protected:
   std::vector<Vector3D> route_;
