@@ -33,11 +33,13 @@ namespace csci3081 {
 
   void DeliveryAgent::ChangeColor(std::vector<IEntityObserver*> observers){
      std::string old_value = "temp";
+     // check if color has been set within the json file
     if(JsonHelper::ContainsKey(details_, "color")) {
       old_value = JsonHelper::GetString(details_, "color");
     }
     std::string new_value;
     float charge_level = battery_->ChargeLeft() / battery_->MaxCharge();
+    // set the color to a hex value based on charge level
     if (charge_level >= .75){
       new_value = "0x00FF00";
     }
@@ -50,6 +52,7 @@ namespace csci3081 {
     else{
       new_value = "0xFF0000";
     }
+    // if the color changed set the new hex value
     if (old_value.compare(new_value) != 0){
       details_["color"] = picojson::value(new_value);
       picojson::object notification = JsonHelper::CreateJsonNotification();
